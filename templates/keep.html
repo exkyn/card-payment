@@ -1,0 +1,431 @@
+{% load static %} 
+{% static 'images' as baseUrl %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="description" content="Skilits skills jobs">
+        <meta name="author" content="Skilits Developers">
+        <title>Skilits</title>
+        <link rel="shortcut icon" href="{{baseUrl}}/{{'logo.png'}}" type="image/x-icon">
+
+        <!-- all css -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+        <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=KoHo:wght@500&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+        {% comment %} <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" /> {% endcomment %}
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+        <script type="text/javascript">
+            var user = '{{request.user}}'
+
+            function getToken(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getToken('csrftoken');
+        </script>
+        <script>
+            var video = document.getElementsById("videoID");
+            video.setAttribute("playsinline", "");
+            video.setAttribute("muted", "");
+            video.play();
+        </script>
+    </head>
+
+    <body>
+        <div class="body-container" style="position: relative;">
+        <!-- MESSAGES -->
+        <!-- <div class="msgs_info py-3"> -->
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="msgs_info bg-danger">
+                    <p class="dj_err_msg">{{message}}</p>
+                </div>
+            {% elif message.tags == 'success' %}
+                <div class="msgs_info">
+                    <p class="dj_err_msg">{{message}}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <!-- </div> -->
+
+        <!-- Preloader -->
+        <div class="preloader">
+            <hr><hr><hr><hr><hr>
+        </div>
+
+        <!-- header -->
+        <div class="mbhb"></div>
+        <header class="home-3 sticky nav py-0">
+            {% block h1 %}
+            <div class="container navbar d-none d-lg-block d-xl-block">
+                <div class="d-flex align-items-center justify-content-sm-between">
+                    <!-- logo  -->
+                    <div class="logo">
+                        <a href="{% url 'index' %}">
+                            <img loading="lazy" src="{{baseUrl}}/{{'logo.png'}}" alt="logo">
+                        </a>
+                    </div>
+                    <!-- search wrapper  -->
+                    {% block search %}
+                    <div class="search_wrap">
+                        <!-- search input box  -->
+                        <div class="search d-flex mx-auto">
+                            <form class="search_input activatesearch remover mx-auto" action="{% url 'general_search' %}">
+                                <input name="q" id="tags" type="search" placeholder="Search..." class="fbos">
+                                <button id="searchIcon" class="search-icon" type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endblock %}
+
+                    <!-- Header Icons -->
+                    <!-- ACCOUNT -->
+                    <div class="position-relative header_icon lg_myacwrap home-1 ">
+                        <a href="{% url 'account'%} " class="icon_wrp text-center myacc ">
+                            <span class="icon ">
+                                <i class="far fa-user "></i>
+                            </span>
+                            <span class="icon_text ">Account</span>
+                        </a>
+
+                        <!-- my account hover  -->
+                        <div class="myacc_cont pt-2">
+                            {% if request.user.is_authenticated %}
+                                <div class="ac_join ac2 ">
+                                    <p>Hi, {{request.user.full_name}}</p>
+                                </div>
+                                <div class="ac_links mt-0 pt-0 ">
+                                    <a href="{% url 'account'%}" class="myac ">
+                                        <i class="far fa-id-card "></i>
+                                        Dashboard
+                                    </a>
+                                    <a href="{% url 'add_skill' %}">
+                                        <i class="far fa-tools "></i>
+                                        Add a skill
+                                    </a>
+                                    <a href="">
+                                        <i class="far fa-user-hard-hat "></i>
+                                        Hire an expert
+                                    </a>
+                                    <a href="">
+                                        <i class="far fa-fas fa-graduation-cap "></i>
+                                        Learn a skill
+                                    </a>
+                                </div>
+                                <div class="account_btn d-flex justify-content-center align-item-center mb-0 mt-2 ">
+                                    <a href="{% url 'logout' %} " class="default_btn w-100 bg-danger">Sign out</a>
+                                </div>
+                            {% else %}
+                                <div class="ac_join ">
+                                    <p>Welcome</p>
+                                    <div class="account_btn d-flex justify-content-around ">
+                                        <a href="{% url 'register' %}" class="su px-3 py-1 text-white">Signup</a>
+                                        <a href="{% url 'login' %}" class="si px-3 py-1 text-white">Login</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div >
+            {% endblock %}
+
+            {% block h2 %}
+            <!-- =========== Mobile Navbar ============== -->
+            <div class="container-fluid d-lg-none d-xl-none mobile_nav">
+                <div class="d-flex align-items-center justify-content-between">
+                    <!-- logo  -->
+                    <div class="mobile_logo logo-hide nav-icons-hide">
+                        <a href="{% url 'index' %} ">
+                            <img loading="lazy " src="{{baseUrl}}/{{ 'logo.png'}} " alt="logo ">
+                        </a>
+                    </div>
+                    
+                    <!-- search wrapper  -->
+                    <div class="search_wrap mobile_search_wrap mx-3">
+                        <!-- search input box  -->
+                        <div class="search m-auto msi">
+                            <form class="search_input remover " action="{% url 'general_search' %}">
+                                <input name="q" type="search " class="fbos activatesearch" placeholder="Search... ">
+                                <button id="searchIcon " class="search-icon search-icon-mobile " type="submit "><i class="fa fa-search "></i></button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ============ Mobile menu ========= -->
+                    <div class="position-relative myacwrap home-1 nav-icons-hide me-2">
+                        <a href="javascript:void(0) " class="icon_wrp text-center my-0 py-0 open_menu ">
+                            <span class="icon ">
+                                <i class="far fa-bars fs-1"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+        </header>
+
+        {% block h3 %}
+            <!-- mobile menu -->
+            <div class="mobile_menwrap d-lg-none" id="mobile_menwrap">
+                {% if request.user.is_authenticated %}
+                    <div class="mobile_title my-auto mt-3">
+                        <h5>
+                            Hi, {{request.user.full_name}}
+                            <span class="sidebarclose" id="menuclose">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </h5>
+                    </div>
+
+                    <div class="mobile_menu_cont mt-3">
+                        <div class="menu_user mb-2">
+                            <div class="si">
+                                <a href="{% url 'account'%}" class="myac px-4">
+                                    Dashboard
+                                </a>
+                            </div>
+
+                            <div class="su bg-danger">
+                                <a href="{% url 'logout'%}" class="myac text-white px-4">
+                                    Sign out
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="menu_items">
+                            <ul>
+                                <li>
+                                    <a href="{% url 'add_skill'%}">Add a skill</a>
+                                    <a href="">Hire an expert</a>
+                                    <a href="">Learn a skill</a>
+                                    <a href="">How Skilits works</a>
+                                    <a href="">Advertise with US</a>
+                                    <a href="">FAQ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="mobile_title my-auto mt-2">
+                        <h5>
+                            Hello...welcome!!!
+                            <span class="sidebarclose" id="menuclose">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </h5>
+                    </div>
+
+                    <div class="mobile_menu_cont mt-3">
+                        <div class="menu_user mb-2">
+                            <div class="si">
+                                <a href="{% url 'register' %}">Signup</a>
+                            </div>
+                            <div class="si">
+                                <a href="{% url 'login' %}">Login</a>
+                            </div>
+                        </div>
+    
+                        <div class="menu_items">
+                            <ul>
+                                <li>
+                                    <a href="{% url 'add_skill'%}">Add a skill</a>
+                                    <a href="">Hire an expert</a>
+                                    <a href="">Learn a skill</a>
+                                    <a href="">How Skilits works</a>
+                                    <a href="">Advertise with US</a>
+                                    <a href="">FAQ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endblock %}
+
+        <div class="hya"></div>
+
+        {% block content %}
+
+        {% endblock %}
+
+        {% block ads %}
+            <!-- ad banner -->
+            <div class="offer_banner_area section_padding_b">
+                <div class="container">
+                    {% for ad in ads %}
+                        {% if forloop.counter0 == 1 %}
+                            <a href="https://mtnbusiness.com.ng/" target="_blank">
+                                <img loading="lazy" src="{{ ad.img.url }}" alt="ad">
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block footer %}
+        <!-- Back to Top -->
+        <div class="totop ">
+            <div class="btt ">
+                <a href="#"><i class="fas fa-arrow-up"></i></a>
+            </div>
+        </div>
+
+        <!-- footer area -->
+        <footer class="colored ">
+            <div class="container ">
+                <div class="row py-0 py-lg-5">
+                    <!-- footer company about  -->
+                    <div class="col-6 col-lg-4 mb-0 p-0 mx-auto">
+                        <div class="footer_logo text-center">
+                            <a href="{% url 'index' %}">
+                                <img loading="lazy" src="{{baseUrl}}/{{ 'logo.png'}} " alt="logo">
+                            </a>
+                        </div>
+                        <div class="footet_text text-center mt-3">
+                            <p>Reliable skilful services</p>
+                        </div>
+                    </div>
+
+                    <!-- footer links  -->
+                    <div class="footer-links col-6 col-lg-4 m-auto px-0">
+                        <div class="footer_menu m-auto">
+                            <a href="track-order.html ">Advertise</a>
+                            <a href="track-order.html ">Grow your audience</a>
+                            <a href="track-order.html ">FAQ</a>
+                            <a href="track-order.html ">Terms & Conditions</a>
+                            <a href="track-order.html ">About Us</a>
+                            <a href="track-order.html ">Contact</a>
+                        </div>
+                    </div>
+
+                    <!-- Social and Newsletter -->
+                    <div class="col-9 col-lg-4 mt-5 mt-lg-0 mb-5 mb-lg-0 p-0 social-news m-auto">
+                        <!-- Newsletter -->
+                        <div class="footer_newslet m-auto mb-5 mb-md-4 p-0">
+                            <h4>Newsletter</h4>
+                            <form class="footernews_form ">
+                                <input type="text " placeholder="Your email address ">
+                                <button type="submit " class="default_btn text-white">Subscribe</button>
+                            </form>
+                        </div>
+
+                        <!-- Social Platforms -->
+                        <div class="social-connect m-auto">
+                            <a href="# "><i class="fab fa-instagram "></i></a>
+                            <a href="# "><i class="fab fa-facebook-f fac "></i></a>
+                            <a href="# "><i class="fab fa-twitter "></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- copyright -->
+        <div class="copyright_wrap ">
+            <div class="container ">
+                <div class="row align-items-center ">
+                    <div class="col-12 col-md-6 col-lg-6 mt-2">
+                        <p class="copyright_text text-xxxs">© Skilits - All Rights Reserved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </body>
+
+    <!-- all js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js " integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin=" anonymous " referrerpolicy="no-referrer "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.6.1/htmx.min.js " integrity="sha512-aUGLiEPPd4KYAKmXba1ZeH3JCtPEo3F8Ay1C7sRpSnOcfsczlP1j14jo3abBaMqJu9QC4pbh8TyKy9ekZ6j7Pw==" crossorigin=" anonymous " referrerpolicy="no-referrer "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    {% comment %} <script defer src="https://pyscript.net/alpha/pyscript.js"></script> {% endcomment %}
+
+
+    <script src="{% static 'js/app.js' %} "></script>
+    <script src="{% static 'js/owl.js' %} "></script>
+    <script>
+        $(document).ready(function(){
+            $('.msgs_info').fadeOut(6000)
+            $('.dj_err_msg').fadeOut(6000)
+        });
+    </script>
+
+    <script>
+        // image preview
+        let fileInput2 = document.getElementById('uploadImg2')
+        let imageContainer2 = document.getElementById('img_preview2')
+        let noOfFiles2 = document.getElementById('no_of_files2')
+
+        function preview2() {
+            imageContainer2.innerHTML = ''
+            noOfFiles2.textContent = `${fileInput2.files.length} File(s) selected`;
+
+            for(i of fileInput2.files) {
+                let reader = new FileReader();
+                let figure = document.createElement('figure');
+                let figCap = document.createElement('figcaption');
+                figCap.innerText = i.name;
+                figure.appendChild(figCap);
+                reader.onload=()=>{
+                    let img = document.createElement('img');
+                    img.setAttribute('src', reader.result);
+                    figure.insertBefore(img, figCap);
+                }
+                imageContainer2.appendChild(figure);
+                reader.readAsDataURL(i);
+            }
+
+        }
+    </script>
+
+    <script>
+    
+    </script>
+
+    {% block js %}
+    {% endblock %}
+</html>
+
+
+
