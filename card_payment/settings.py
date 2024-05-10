@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     
     'geoip2',
+    'home',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -43,6 +45,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTH_USER_MODEL = 'account.User'
 
 ROOT_URLCONF = 'card_payment.urls'
 
@@ -127,3 +131,11 @@ GEOIP_PATH =os.path.join('geoip')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
