@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import dj_database_url
+import cloudinary
 
 load_dotenv()
 
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
     'geoip2',
     'home',
     'account',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -118,9 +120,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/') 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/') 
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+
+cloudinary.config( 
+    CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME'), 
+    API_KEY = os.environ.get('CLOUDINARY_API_KEY'), 
+    CLOUDINARY_URL = os.environ.get('CLOUDINARY_API_SECRET')
+)
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -139,3 +150,4 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
+
