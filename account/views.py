@@ -98,15 +98,13 @@ def login(request):
         
         if user is not None:
             auth.login(request, user)
-            messages.add_message(request, messages.SUCCESS, 'Login successfull')
-            return redirect('index')
+            return JsonResponse({'status':"Login suceessfull"})
         else:
             return JsonResponse({'status':"Invalid email or password"})
 
 
 def logout(request):
     auth.logout(request)
-    messages.add_message(request, messages.SUCCESS, 'Logged out')
     return redirect('index')
 
 
@@ -125,6 +123,6 @@ def resendLink(request):
         to = [email],
     )
     verification_email.send()
-
+    messages.success(request, 'Verification email resent.')
     return redirect('index')
 

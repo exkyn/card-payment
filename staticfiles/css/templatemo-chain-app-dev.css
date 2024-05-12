@@ -1145,7 +1145,7 @@ PopUp
   top: 0;
   background: #FFF;
   border-radius: 20px;
-  transform: translateY(-30px);
+  transform: translateY(-45px);
 }
 
 .btn {
@@ -1400,13 +1400,15 @@ a.btn_red {
   display: block;
   font-size: 14px;
   width: 100%;
-  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 7px;
   padding: 7px;
 }
 
-.frm_wrp p {
+.frm_wrp p,
+#process_pay p,
+#add_card p,
+#contactForm p {
   padding: 0;
   margin: 0;
   margin-bottom: 10px;
@@ -1415,12 +1417,22 @@ a.btn_red {
   line-height: 15px;
 }
 
-#regBtn.disabled,
-#loginBtn.disabled,
-#payBtn.disabled {
-    background-color: #e9e9e9;
-    color: rgba(0, 0, 0, 0.45);
-    cursor: not-allowed;
+#process_pay p,
+#add_card p,
+#contactForm p {
+  margin-bottom: 2px;
+}
+
+.card-num {
+  position: relative;
+}
+
+.card-num img {
+  width: 40px;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* 
@@ -1566,12 +1578,12 @@ responsive
   form#contact {
     padding: 45px;
   }
-  .modal_trigger,
-  .modal2_trigger {
+  .modal_trig {
     width: 100%;
     background-color: #4b8ef1 !important;
     color: #fff !important;
     border-radius: 0;
+    margin: 1px auto;
   }
 }
 
@@ -1713,4 +1725,50 @@ responsive
   form#contact {
     padding: 30px;
   }
+}
+
+
+/* ================ALERT=============== */
+.msgs_info {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #4b8ef1;
+  width: 300px;
+  z-index: 999999;
+}
+
+.msgs_info p {
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  padding: 5px 0;
+}
+
+.alertify-notifier {
+  z-index: 99999;
+}
+
+.alertify-notifier .ajs-message {
+  color: #ffffff;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  padding: 2px;
+  line-height: 16px;
+  background-color: #4b8ef1;
+}
+.alertify-notifier .ajs-message.ajs-success {
+  color: #fff;
+  background: #4b8ef1;
+}
+.alertify-notifier .ajs-message.ajs-error {
+  color: #fff;
+  background: #fe4221;
+}
+.alertify-notifier .ajs-message.ajs-warning {
+  background: #01377e;
+  border-color: #999;
 }

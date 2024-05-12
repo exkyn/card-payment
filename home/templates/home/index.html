@@ -1,447 +1,120 @@
-{% load static %}
+{% extends "base.html" %}
+{% load static %} 
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <link
-      rel="shortcut icon"
-      href="{% static 'images/logo.png' %}"
-      type="image/x-icon"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet"/>
-
-    <title>Chain pay</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
-
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="{% static 'css/templatemo-chain-app-dev.css' %}"/>
-    <link rel="stylesheet" href="{% static 'css/animated.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/owl.css' %}" />
-  </head>
-
-  <body>
-    <!-- ***** Preloader Start ***** -->
-    <div id="js-preloader" class="js-preloader">
-      <div class="preloader-inner">
-        <span class="dot"></span>
-        <div class="dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    </div>
-    <!-- ***** Preloader End ***** -->
-
-    <!-- ***** Header Area Start ***** -->
-    <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <nav class="main-nav">
-              <!-- ***** Logo Start ***** -->
-              <a href="#top" class="logo">
-                <img src="{% static "images/logo.png" %}" alt="Chain App Dev" />
-              </a>
-              <!-- ***** Logo End ***** -->
-              <!-- ***** Menu Start ***** -->
-              <ul class="nav">
-                <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
-                <li class="scroll-to-section"><a href="#about">Services</a></li>
-                <li class="scroll-to-section"><a href="#about">About</a></li>
-                <li class="scroll-to-section"><a href="#contact">Contact us</a></li>
-                <li>
-                  <div class="gradient-button mt-wrp d-md-flex">
-                    {% if request.user.is_authenticated %}
-                    <a class="modal2_trigger text-dark me-md-1 me-lg-2" href="#modal2" style="color:black !important;">Make Payment  &nbsp; <i class="fas fa-credit-card"></i></a>
-                    <span class="d-block d-md-none w-100"><a class="text-danger fw-bold w-100" href="{% url 'logout' %}" style="color:red !important;">Logout &nbsp;<i class="fas fa-sign-out-alt"></i></a></span>
-                    <span class="d-none d-md-block"><a class="d-none d-md-block text-danger fw-bold" href="{% url 'logout' %}" style="color:red !important;"><i class="fas fa-sign-out-alt"></i></a></span>
-                    {% else %}
-                    <a class="modal_trigger text-dark" href="#modal">Get Started &nbsp; <i class="fa fa-sign-in-alt"></i></a>
-                    {% endif %}
-                  </div>
-                </li>
-              </ul>
-              <a class="menu-trigger">
-                <span>Menu</span>
-              </a>
-              <!-- ***** Menu End ***** -->
-            </nav>
-          </div>
-        </div>
-      </div>
-    </header>
-    <!-- ***** Header Area End ***** -->
-
-    <div id="modal" class="popupContainer" style="display: none">
-      <div class="popupHeader">
-        <i class="fas fa-arrow-left text-primary gsba back_btn"></i> &nbsp;&nbsp; <span class="header_title">Register or Login</span>
-        <span class="modal_close"><i class="fas fa-times"></i></span>
-      </div>
-
-      <section class="popupBody">
-        <!-- Social Login -->
-        <div class="social_login">
-          <div class="action_btns">
-            <div class="one_half">
-              <a href="#" id="register_form" class="btn">Sign up</a>
-            </div>
-            <div class="one_half last">
-              <a href="#" id="login_form" class="btn">Login</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="user_register frm_wrp">
-          <form id="reg_form">
-            {% csrf_token %}
-            <label>Full Name</label>
-            <input name="full_name" type="text" placeholder="Enter your full name" />
-            <p id="fnerr">.</p>
-
-            <label>Email Address</label>
-            <input name="email" type="email" placeholder="Enter your email" />
-            <p id="emerr">.</p>
-
-            <label>Password</label>
-            <input name="password" type="password" placeholder="Enter your password" />
-            <p id="pwderr">.</p>
-
-            <div class="checkbox">
-              <input id="send_updates" type="checkbox" />
-              <label for="send_updates">Send me occasional email updates</label>
-            </div>
-
-            <div class="action_btns mb-3">
-                <input type="submit" value="Signup" id="regBtn" class="btn btn_red w-100" />
-                <input value="Loading..." class="loadingBtn btn btn_red w-100" disabled />
-            </div>
-          </form>
-        </div>
-
-        <div class="user_login frm_wrp">
-          <form id="login_form">
-            {% csrf_token %}
-            <p id="invaliderr" class="p-0 m-0 mb-2 lh-md text-danger fs-6 text-center" style="font-weight:400;"></p>
-            <label>Email</label>
-            <input name="login_email" type="text" placeholder="Enter your email" />
-            <p id="login_emerr">.</p>
-
-            <label>Password</label>
-            <input name="login_password" type="password" placeholder="Enter your password" />
-            <p id="login_pwderr">.</p>
-
-            <div class="checkbox">
-              <input id="remember" type="checkbox" />
-              <label for="remember">Remember me</label>
-            </div>
-
-            <div class="action_btns mb-3">
-                <input type="submit" value="Login" id="loginBtn" class="btn btn_red w-100" />
-                <input value="Loading..." class="loadingBtn2 btn btn_red w-100" disabled />
-            </div>
-          </form>
-        </div>
-
-        <div class="verify_email">
-          <h5 class="text-center primary-color border-bottom pb-2">Please verify your email</h5>
-          <p class="fs-6 text-center mt-2">
-              A verification link have been sent to <br>
-              <b id="reg_email"></b>, <br>
-              please check your email <br>
-              and click on the link to <br>
-              complete your registration.
-          </p>
-        </div>
-      </section>
-    </div>
-
-    <div id="modal2" class="popupContainer" style="display: none">
-      <div class="popupHeader">
-        {% if request.user.is_verified %}
-        <i class="fas fa-arrow-left text-primary gsba back_btn"></i> &nbsp;&nbsp; <span class="header_title">Payment Details</span>
-        {% else %}
-        <i class="fas fa-arrow-left text-primary gsba back_btn"></i> &nbsp;&nbsp; <span class="header_title">Verification</span>
-        {% endif %}
-        <span class="modal_close"><i class="fas fa-times"></i></span>
-      </div>
-
-      <section class="popupBody">
-        {% if request.user.is_verified %}
-          <form>
-              <div class="panel panel-default">
-                  <div class="panel-heading">
-                      <div class="row">
-                          <img width="500px" class="img-responsive cc-img" src="http://www.prepbootstrap.com/Content/images/shared/misc/creditcardicons.png">
-                      </div>
-                  </div>
-                  <div class="panel-body">
-                      <form role="form">
-                        <div class="row my-3">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label class="d-block">Choose Receiver</label>
-                                    <select name="cars" class="form-control py-1" id="cars">
-                                      <option value="Amazon">Amazon</option>
-                                      <option value="Walmart">Walmart</option>
-                                      <option value="ebay">ebay</option>
-                                      <option value="Namecheap">Namecheap</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row my-3">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label>Name On Card</label>
-                                    <input type="text" class="form-control" placeholder="Card Owner Names" />
-                                </div>
-                            </div>
-                        </div>
-                          <div class="row my-3">
-                              <div class="col-12">
-                                  <div class="form-group">
-                                      <label>Card Number</label>
-                                      <input id="cardNumber" type="text" class="form-control" maxlength="16" placeholder="Valid Card Number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
-                                      <input id="alt-card-inp" type="hidden" name="">
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="row my-3">
-                              <div class="col-7">
-                                  <div class="form-group">
-                                      <label class="hidden-xs">Exp Date</label>
-                                      <input id="expNumber" type="text" class="form-control" maxlength="4" placeholder="MM / YY" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
-                                  </div>
-                              </div>
-                              <div class="col-5 pull-right">
-                                  <div class="form-group">
-                                      <label>CVV Code</label>
-                                      <input id="cvvNumber" type="text" class="form-control" maxlength="3" placeholder="CVC" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
-                                  </div>
-                              </div>
-                          </div>
-                      </form>
-                  </div>
-                  <div class="panel-footer my-4">
-                      <div class="row">
-                          <div class="col-12">
-                              <button class="btn btn-warning btn-lg btn-block w-100 border-0">Process payment</button>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </form>
-        {% else %}
-          <div class="verify_email d-block text-center">
-            <h5 class="text-center primary-color border-bottom pb-2">Please verify your email</h5>
-            <p class="fs-6 text-center mt-2 lh-sm">
-                A verification link have been <br>
-                sent to your email please check <br>
-                your email and click on the link to <br>
-                complete your registration.
-            </p>
-            <a href="{% url 'resend_link' %}" class="btn btn-round btn-md py-1 px-2 mt-4">Resend link</a>
-          </div>
-        {% endif %}
-      </section>
-    </div>
-
+{% block content %}
     <div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
-      <div class="container">
+    <div class="container">
         <div class="row">
-          <div class="col-lg-12">
+        <div class="col-lg-12">
             <div class="row">
-              <div class="col-lg-6 align-self-center">
+            <div class="col-lg-6 align-self-center">
                 <div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
-                  <div class="row">
+                <div class="row">
                     <div class="col-lg-12 banner-wrp">
-                      <h2>Fast And Secure Card Payment</h2>
-                      <p>
+                    <h2>Fast And Secure Card Payment</h2>
+                    <p>
                         Chain provides fast, secure and reliable 
                         card payment for all purposes including online
                         shopping, subscriptions and other payments.
                         We aim at providing you with a smooth payment experience. 
-                      </p>
-                      <div class="make-payment-btn">
+                    </p>
+                    <div class="make-payment-btn">
                         {% if request.user.is_authenticated %}
                         <button class="modal2_trigger" href="#modal2">Make Payment &nbsp; <i class="fas fa-credit-card"></i></button>
                         {% else %}
                         <button class="modal_trigger" href="#modal">Get Started &nbsp; <i class="fas fa-sign-in-alt"></i></button>
                         {% endif %}
-                      </div>
                     </div>
-                  </div>
+                    </div>
                 </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
-                  <img src="{% static "images/cc.png" %}" alt="" />
                 </div>
-              </div>
             </div>
-          </div>
+            <div class="col-lg-6">
+                <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+                <img src="{% static "images/cc.png" %}" alt="" />
+                </div>
+            </div>
+            </div>
         </div>
-      </div>
+        </div>
+    </div>
     </div>
 
     <div id="about" class="about-us section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-6 align-self-center">
-            <div class="section-heading">
-              <h4>About <em>What We Do</em> &amp; Who We Are</h4>
-              <img src="{% static "images/heading-line-dec.png" %}" alt="" />
-              <p>
-                Chain is an online card payment platform which focuses 
-                on secure transaction and fraud detection with our smart
-                algorithm.
-              </p>
-            </div>
+        <div class="container">
             <div class="row">
-              <div class="col-lg-6">
-                <div class="box-item">
-                  <h4><a href="#">Secure Payment</a></h4>
-                  <p>Trust in us</p>
+            <div class="col-lg-6 align-self-center">
+                <div class="section-heading">
+                <h4>About <em>What We Do</em> &amp; Who We Are</h4>
+                <img src="{% static "images/heading-line-dec.png" %}" alt="" />
+                <p>
+                    Chain is an online card payment platform which focuses 
+                    on secure transaction and fraud detection with our smart
+                    algorithm.
+                </p>
                 </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="box-item">
-                  <h4><a href="#">Fraud Detection</a></h4>
-                  <p>No room for scam</p>
+                <div class="row">
+                <div class="col-lg-6">
+                    <div class="box-item">
+                    <h4><a href="#">Secure Payment</a></h4>
+                    <p>Trust in us</p>
+                    </div>
                 </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="box-item">
-                  <h4><a href="#">Card Management</a></h4>
-                  <p>You relax, we work</p>
+                <div class="col-lg-6">
+                    <div class="box-item">
+                    <h4><a href="#">Fraud Detection</a></h4>
+                    <p>No room for scam</p>
+                    </div>
                 </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="box-item">
-                  <h4><a href="#">24/7 Support &amp; Help</a></h4>
-                  <p>Always here for you</p>
+                <div class="col-lg-6">
+                    <div class="box-item">
+                    <h4><a href="#">Card Management</a></h4>
+                    <p>You relax, we work</p>
+                    </div>
                 </div>
-              </div>
+                <div class="col-lg-6">
+                    <div class="box-item">
+                    <h4><a href="#">24/7 Support &amp; Help</a></h4>
+                    <p>Always here for you</p>
+                    </div>
+                </div>
+                </div>
             </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="right-image">
-              <img src="{% static "images/ccc.png" %}" alt=""/>
+            <div class="col-lg-6">
+                <div class="right-image">
+                <img src="{% static "images/ccc.png" %}" alt=""/>
+                </div>
             </div>
-          </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <div id="contact" class="container contact-us section mt-5 pt-3">
-      <div class="row">
-        <div class="col-10 col-sm-8 col-md-4 mx-auto shadow">
-          <h4 class="text-center m-0 p-0 mb-3">Contact Us</h4>
-          <div class="">
-            <form>
-              <label>Full Name</label>
-              <input type="text" placeholder="enter your full name"/>
+        <div class="row">
+            <div class="col-10 col-sm-8 col-md-4 mx-auto shadow">
+            <h4 class="text-center m-0 p-0 mb-3">Contact Us</h4>
+                <div class="">
+                    <form id="contactForm">
+                        {% csrf_token %}
+                        <label>Full Name</label>
+                        <input id="sender_full_name" type="text" placeholder="enter your full name"/>
+                        <p id="sfnerr">.</p>
 
-              <label>Email</label>
-              <input type="email" placeholder="enter your email"/>
+                        <label>Email</label>
+                        <input id="sender_email" type="email" placeholder="enter your email"/>
+                        <p id="semerr">.</p>
 
-              <label>Message</label>
-              <textarea rows="4" placeholder="enter your message"></textarea>
+                        <label>Message</label>
+                        <textarea id="sender_message" rows="4" placeholder="enter your message"></textarea>
+                        <p id="smerr">.</p>
 
-              <div class="action_btns mb-3">
-                  <button class="btn btn_red w-100">Send message</button>
-              </div>
-            </form>
-          </div>
+                        <div class="action_btns my-3">
+                            <button class="btn btn_red w-100 contactBtn">Send message</button>
+                            <button class="btn btn_red w-100 loadingBtn3 disabled">Loading...</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-
-    <footer id="newsletter">
-      <div class="container footer-wrp">
-        <div class="row mx-auto">
-          <div class="col-12 col-md-6 col-lg-4 text-left">
-            <div class="footer-widget footer-about-us">
-              <h4>About Our Company</h4>
-              <div class="logo mt-2">
-                <img src="{% static "images/white-logo.png" %}" alt=""/>
-              </div>
-              <p>
-                We aim to provide a secure, reliable and distinctive payment
-                experience. Our primary target is your premium satisfaction.
-              </p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="footer-widget">
-              <h4>Useful Links</h4>
-              <ul class="text-center">
-                <li><a href="#top">Home</a></li>
-                <li><a href="#about">Services</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact us</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-12 mt-sm-5 mt-lg-0 col-lg-4">
-            <div class="footer-widget">
-              <h4>Contact Us</h4>
-              <p>Ikeja City Mall, Ikeja, Lagos, Nigeria</p>
-              <p><a href="">+2348012345667</a></p>
-              <p><a href="">info@chain.co</a></p>
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="copyright-text">
-              <p>Copyright © Chain 2024. All Rights Reserved.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="{% static 'jquery/jquery.min.js' %} "></script>
-    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %} "></script>
-    <script src="{% static 'js/owl-carousel.js' %} "></script>
-    <script src="{% static 'js/animation.js' %} "></script>
-    <script src="{% static 'js/imagesloaded.js' %} "></script>
-    <script src="{% static 'js/popup.js' %} "></script>
-    <script src="{% static 'js/custom.js' %} "></script>
-
-    <script>
-      let cardNum = $('#cardNumber').val()
-
-      function gfg_Run() {
-        console.log(
-            cardNum.substr(0, 4) + "",
-            cardNum.substr(4, 4) + "",
-            cardNum.substr(8, 4) + "",
-            cardNum.substr(12, 4) + ""
-        );
-        cardNum.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-      }
-
-
-      function myFunction() {
-        let text = document.getElementById("myInput").value;
-        document.getElementById("demo").innerHTML = "You wrote: " + text;
-      }
-    </script>
-  </body>
-</html>
+{% endblock content %}
