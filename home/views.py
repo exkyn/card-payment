@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.management.utils import get_random_secret_key  
-from .models import ManageCard, ContactUs
+from .models import ManageCard, ContactUs, Payments
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
+from account.utils import send_onetimepassword
+from account.models import OneTimePassword
 
 # Create your views here.
 def index(request):
@@ -12,7 +14,8 @@ def index(request):
 def manage_card(request):
     if request.user.is_authenticated:
         all_cards = ManageCard.objects.filter(user=request.user)
-        context = {'all_cards': all_cards}
+        all_payments = Payments.objects.filter(user=request.user)
+        context = {'all_cards': all_cards, 'all_payments':all_payments}
         return render(request, 'home/manage-card.html', context)
     else:
         return redirect('index')
@@ -30,7 +33,7 @@ def add_card(request):
         card_amount = 5000000
         card_auth = get_random_secret_key()
         
-        card_number = card_number[:4] + ' **** **** ****'
+        card_number = card_number[-4:]
         card_cvv = make_password(card_cvv)
         card_pin = make_password(card_pin)
         
@@ -59,6 +62,56 @@ def delete_card(request):
             return JsonResponse({'status':"Card deleted successfully"})
         else:
             return JsonResponse({'status':"An error occured"})
+
+
+def process_payment(request):
+    if request.method == 'POST':
+        user = request.user
+        beneficiary = request.POST['beneficiary']
+        card = request.POST['card']
+        amount = request.POST['amount']
+        card_code = request.POST['card_code']
+        trans_pin = request.POST['trans_pin']
+        
+        card_user = ManageCard.objects.filter(user=user) 
+        
+        for c in card_user:
+            if c.card_number == card:
+                if int(amount) > c.card_amount:
+                    return JsonResponse({'status':"Insufficient funds"})
+                elif not check_password(card_code, c.card_cvv):
+                    return JsonResponse({'status':"wrong CVV"})
+                elif not check_password(trans_pin, c.card_pin):
+                    # trial_times -= 1
+                    return JsonResponse({'status':"wrong pin. You have 3 trials left"})
+                else:
+                    c.card_amount = c.card_amount - int(amount)
+                    for cs in card_user:
+                        cs.save()
+                    new_payments = Payments.objects.create(
+                        user=user, beneficiary=beneficiary, 
+                        card=card, amount=amount,
+                    )
+                    new_payments.save()
+                    send_onetimepassword(c.user.email)
+                    
+                return JsonResponse({'status':"Authenticating"})
+
+    return JsonResponse({'status':'An error occurred'})
+
+
+def auth_payment(request):
+    if request.method == 'POST':
+        user = request.user
+        auth_otp = request.POST['auth_otp']
+
+        otp = OneTimePassword.objects.filter(user=user)
+        for o in otp:
+            if o.code == auth_otp:
+                o.delete()
+                return JsonResponse({'status':"Authentication successful"})
+            else:
+                return JsonResponse({'status':"Code invalid or already used"})
 
 
 def contact_us(request):

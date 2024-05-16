@@ -2,7 +2,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import dj_database_url
-import cloudinary
 
 load_dotenv()
 
@@ -17,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '*']
 
@@ -35,7 +34,6 @@ INSTALLED_APPS = [
     'geoip2',
     'home',
     'account',
-    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -74,16 +72,16 @@ WSGI_APPLICATION = 'card_payment.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-    }
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 #     }
-# }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation
@@ -120,18 +118,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/') 
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
-
-cloudinary.config( 
-    CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME'), 
-    API_KEY = os.environ.get('CLOUDINARY_API_KEY'), 
-    CLOUDINARY_URL = os.environ.get('CLOUDINARY_API_SECRET')
-)
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
+STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -150,4 +139,3 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
-

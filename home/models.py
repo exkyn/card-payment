@@ -15,7 +15,17 @@ class ManageCard(models.Model):
     card_auth = models.CharField(max_length=500)
     
     def __str__(self):
-        return self.user.full_name + ' ' + self.card_number
+        return self.user.full_name + ' -- ' + self.card_number
+
+
+class Payments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    beneficiary = models.CharField(max_length=255)
+    card = models.CharField(max_length=100)
+    amount = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return self.user.full_name + ' -- ' + self.beneficiary
 
 
 class ContactUs(models.Model):

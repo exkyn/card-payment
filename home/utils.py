@@ -6,18 +6,18 @@ from django.conf import settings
 
 def generateOtp():
     otp = ''
-    for i in range(256):
+    for i in range(6):
         otp += str(random.randint(1, 9))
     return otp
 
 
 def send_onetimepassword(email):
-    subject = 'One Time Password for email verification'
+    subject = 'One Time Password for authentication'
     otp_code = generateOtp()
     print(f"===============\n{otp_code}\n================")
     user = User.objects.get(email=email)
     # domaim = get_current_site(request).domain,
-    message = f'Hi {user.full_name}, thank you signing up. Your verification code is {otp_code}'
+    message = f'Hi {user.full_name}, please use this code to authenticate your payment request {otp_code}'
     sender = settings.DEFAULT_FROM_EMAIL
     
     OneTimePassword.objects.create(user=user, code=otp_code)

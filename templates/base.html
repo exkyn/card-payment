@@ -61,12 +61,10 @@
                 <div class="row">
                 <div class="col-12">
                     <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
                     <a href="{% url 'index' %}" class="logo">
                         <img src="{% static "images/logo.png" %}" alt="Chain App Dev" />
                     </a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Menu Start ***** -->
+                    
                     <ul class="nav">
                         <li class="scroll-to-section"><a href="{% url 'index' %}">Home</a></li>
                         {% if request.user.is_authenticated %}
@@ -77,11 +75,13 @@
                         <li>
                             <div class="gradient-button mt-wrp d-md-flex">
                                 {% if request.user.is_authenticated %}
-                                <a class="modal2_trigger modal_trig text-dark me-2" href="#modal2" style="color:black !important;">Make Payment  &nbsp; <i class="fas fa-credit-card"></i></a>
-                                <span class="d-block d-md-none w-100"><a class="text-danger fw-bold w-100" href="{% url 'logout' %}" style="color:red !important;">Logout &nbsp;<i class="fas fa-sign-out-alt"></i></a></span>
-                                <span class="d-none d-md-block"><a class="d-none d-md-block text-danger fw-bold" href="{% url 'logout' %}" style="color:red !important;"><i class="fas fa-sign-out-alt"></i></a></span>
+                                    {% block makePayment %}
+                                        <a class="modal_trig text-dark me-2" href="{% url 'manage_card' %}" style="color:black !important;">Payments  &nbsp; <i class="fas fa-credit-card"></i></a>
+                                    {% endblock %}
+                                    <span class="d-block d-md-none w-100"><a class="text-danger fw-bold w-100" href="{% url 'logout' %}" style="color:red !important;">Logout &nbsp;<i class="fas fa-sign-out-alt"></i></a></span>
+                                    <span class="d-none d-md-block"><a class="d-none d-md-block text-danger fw-bold" href="{% url 'logout' %}" style="color:red !important;"><i class="fas fa-sign-out-alt"></i></a></span>
                                 {% else %}
-                                <a class="modal_trigger modal_trig text-dark" href="#modal" style="color:black !important;">Get Started &nbsp; <i class="fa fa-sign-in-alt"></i></a>
+                                    <a class="modal_trigger modal_trig text-dark" href="#modal" style="color:black !important;">Get Started &nbsp; <i class="fa fa-sign-in-alt"></i></a>
                                 {% endif %}
                             </div>
                         </li>
@@ -89,13 +89,12 @@
                     <a class="menu-trigger">
                         <span>Menu</span>
                     </a>
-                    <!-- ***** Menu End ***** -->
                     </nav>
                 </div>
                 </div>
             </div>
         </header>
-        <!-- ***** Header Area End ***** -->
+
 
         <div id="modal" class="popupContainer" style="display: none">
             <div class="popupHeader">
@@ -180,93 +179,8 @@
             </section>
         </div>
 
-        <div id="modal2" class="popupContainer" style="display: none">
-            <div class="popupHeader">
-                {% if request.user.is_verified %}
-                <i class="fas fa-arrow-left text-primary gsba back_btn"></i> &nbsp;&nbsp; <span class="header_title">Payment Details</span>
-                {% else %}
-                <i class="fas fa-arrow-left text-primary gsba back_btn"></i> &nbsp;&nbsp; <span class="header_title">Verification</span>
-                {% endif %}
-                <span class="modal_close"><i class="fas fa-times"></i></span>
-            </div>
-
-            <section class="popupBody">
-                {% if request.user.is_verified %}
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <form role="form" id="process_pay">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label>Beneficiary</label>
-                                            <select name="beneficiary">
-                                                <option value="" selected hidden>select beneficiary</option>
-                                                <option value="OS">OS</option>
-                                                <option value="DBMS">DBMS</option>
-                                                <option value="Data Structure">Data Structure</option>
-                                            </select>
-                                            <p id="onerr">.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label>Card Number</label>
-                                            <input name="card_number" id="cardNumber" type="text" class="form-control" maxlength="16" placeholder="Valid Card Number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
-                                            <input id="alt-card-inp" type="hidden" name="">
-                                            <p id="cnerr">.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-7">
-                                        <div class="form-group">
-                                            <label class="hidden-xs">Exp Date</label>
-                                            <input name="exp_date" id="expNumber" type="text" class="form-control" maxlength="4" placeholder="MM / YY" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
-                                            <p id="experr">.</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-5 pull-right">
-                                        <div class="form-group">
-                                            <label>CVV Code</label>
-                                            <input name="cvv" id="cvvNumber" type="text" class="form-control" maxlength="3" placeholder="CVC" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
-                                            <p id="cvverr">.</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label>Set Transaction Pin</label>
-                                                <input name="" type="password" class="form-control" placeholder="create a 4 digit pin" maxlength="4" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
-                                                <p id="tperr">.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row my-3">
-                                    <div class="col-12">
-                                        <input type="submit" value="Add Card" id="processpayBtn" class="btn btn-lg btn-block w-100 border-0" />
-                                        <input value="Loading..." class="loadingBtn3 btn btn-lg btn-block w-100 border-0" disabled/>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="verify_email d-block text-center">
-                    <h5 class="text-center primary-color border-bottom pb-2">Please verify your email</h5>
-                    <p class="fs-6 text-center mt-2 lh-sm">
-                        A verification link have been <br>
-                        sent to your email please check <br>
-                        your email and click on the link to <br>
-                        complete your registration.
-                    </p>
-                    <a href="{% url 'resend_link' %}" class="btn btn-round btn-md py-1 px-2 mt-4">Resend link</a>
-                    </div>
-                {% endif %}
-            </section>
-        </div>
+        {% block modal2 %}
+        {% endblock %}
 
         <div id="modal3" class="popupContainer" style="display: none">
             <div class="popupHeader">

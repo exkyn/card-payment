@@ -54,6 +54,12 @@
         closeButton: ".modal_close"
     });
 
+    $(".modal3_trigger").leanModal({
+        top: 100,
+        overlay: 0.6,
+        closeButton: ".modal_close"
+    });
+
     $(".gsba").hide();
     $(function () {
         // Calling Login Form
@@ -353,7 +359,7 @@
         if (card_exp == '' || card_exp[3] != 2 || card_exp[4] < 4 || card_exp[4] == undefined || card_exp.length<5) {
             document.getElementById('cexperr').innerHTML = 'invalid expiry date'
             return false
-        } else if (card_exp[0] > 1 || card_exp[0] == 0 && card_exp[1] < 5 || card_exp[0] == 1 && card_exp[1] > 2) {
+        } else if (card_exp[0] > 1 || card_exp[0] == 0 && card_exp[0] == 1 && card_exp[1] > 2) {
             document.getElementById('cexperr').innerHTML = 'invalid expiry date'
             return false
         } else {
@@ -468,26 +474,132 @@
         })
     })
 
-     // =============RESEND EMAIL AJAX===============
-     $(document).on('submit', '#resendEmail', function (e) {
+    // =============PROCESS PAYMENT AJAX===============
+    $("#modal002").hide();
+    $(document).on('submit', '#process_pay', function (e) {
         e.preventDefault()
-        // var full_name = document.getElementById('sender_full_name').value
-        // var email = document.getElementById('sender_email').value
-        // var message = document.getElementById('sender_message').value
-        // var token = $('input[name=csrfmiddlewaretoken]').val()
+        var beneficiary = document.getElementById('beneficiary').value
+        var card = document.getElementById('card').value
+        var amount = $('input[name=amount]').val()
+        var card_code = $('input[name=card_code]').val()
+        var trans_pin = $('input[name=trans_pin]').val()
+        var token = $('input[name=csrfmiddlewaretoken]').val()
+
+        if (beneficiary == '') {
+            document.getElementById('bnerr').innerHTML = 'select a beneficiary'
+            return false
+        } else {
+            document.getElementById('bnerr').innerHTML = "."
+        }
+        if (card == "" ) {
+            document.getElementById('ccerr').innerHTML = 'select a card'
+            return false
+        } else {
+            document.getElementById('ccerr').innerHTML = "."
+        }
+        if (amount == '' || amount < 500 || amount > 5000000) {
+            document.getElementById('amterr').innerHTML = 'enter amount between 500 - 5,000,000'
+            return false
+        } else {
+            document.getElementById('amterr').innerHTML = "."
+        }
+        if (card_code == "" || card_code.length < 3) {
+            document.getElementById('ccderr').innerHTML = 'invalid CVV code'
+            return false
+        } else {
+            document.getElementById('ccderr').innerHTML = "."
+        }
+        if (trans_pin == "" || trans_pin.length < 4) {
+            document.getElementById('tperr').innerHTML = 'invalid transaction pin'
+            return false
+        } else {
+            document.getElementById('tperr').innerHTML = "."
+        }
+
+        $('.loadingBtn3').show()
+        $('#processpayBtn').hide()
 
         $.ajax({
             method: 'POST',
-            url: '/resend-link/',
+            url: '/process-payment/',
             data: {
-                
+                'beneficiary': beneficiary, 'card': card, 'amount': amount,
+                'trans_pin': trans_pin, 'card_code': card_code, csrfmiddlewaretoken: token
             },
             success: function (response) {
-                alertify.message(response.status)
+                if (response.status == 'Insufficient funds') {
+                    alertify.message(response.status)
+                    document.getElementById('amterr').innerHTML = 'Insufficient funds'
+                    $('.loadingBtn3').hide()
+                    $('#processpayBtn').show()
+                    return false
+                } else if (response.status == 'wrong CVV') {
+                    alertify.message(response.status)
+                    document.getElementById('ccderr').innerHTML = 'wrong CVV'
+                    $('.loadingBtn3').hide()
+                    $('#processpayBtn').show()
+                    return false
+                } else if (response.status == 'wrong pin. You have 3 trials left') {
+                    alertify.message(response.status)
+                    document.getElementById('tperr').innerHTML = 'wrong pin'
+                    $('.loadingBtn3').hide()
+                    $('#processpayBtn').show()
+                    return false
+                } else {
+                    $("#modal001").hide();
+                    $("#modal002").show();
+                    $('.loadingBtn3').hide()
+                    $("#auth_pay").hide();
+                    $("#loader_wrp").show();
+                    $(".header_title").text('Authenticating...');
+
+                    function otp() {
+                        $("#loader_wrp").hide();
+                        $("#auth_pay").show();
+                    }
+                    const myTimeout = setTimeout(otp, 5000);
+                    return false;
+                }
             }
         })
     })
 
+    // =============AUTHENTICATE PAYMENT AJAX===============
+    $(document).on('submit', '#auth_pay', function (e) {
+        e.preventDefault()
+        var auth_otp = $('input[name=auth_otp]').val()
+        var token = $('input[name=csrfmiddlewaretoken]').val()
+
+        if (auth_otp == '' || auth_otp.length < 6) {
+            document.getElementById('aotperr').innerHTML = 'Invaliid OTP'
+            return false
+        } else {
+            document.getElementById('aotperr').innerHTML = "."
+        }
+
+        $('.loadingBtn3').show()
+        $('#authBtn').hide()
+
+        $.ajax({
+            method: 'POST',
+            url: '/auth-payment/',
+            data: {
+                'auth_otp': auth_otp, csrfmiddlewaretoken: token
+            },
+            success: function (response) {
+                if (response.status == 'Code invalid or already used') {
+                    alertify.message(response.status)
+                    document.getElementById('aotperr').innerHTML = 'Code invalid or already used'
+                    $('.loadingBtn3').hide()
+                    $('#authBtn').show()
+                    return false
+                } else {
+                    alertify.message(response.status)
+                    window.location.reload()
+                }
+            }
+        })
+    })
 
     // ===============Notifications===============
     alertify.set('notifier','position', 'top-right');

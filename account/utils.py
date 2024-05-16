@@ -12,12 +12,12 @@ def generateOtp():
 
 
 def send_onetimepassword(email):
-    subject = 'One Time Password for email verification'
+    subject = 'One Time Password for AUTHENTICATION'
     otp_code = generateOtp()
     print(f"===============\n{otp_code}\n================")
     user = User.objects.get(email=email)
     # domaim = get_current_site(request).domain,
-    message = f'Hi {user.full_name}, thank you signing up. Your verification code is {otp_code}'
+    message = f'Hi {user.full_name}, please use this OTP for your payment authentication {otp_code}'
     sender = settings.DEFAULT_FROM_EMAIL
     
     OneTimePassword.objects.create(user=user, code=otp_code)
@@ -34,3 +34,5 @@ def send_normal_email(data):
         to=[data['to_email']]
     )
     email.send()
+    
+    

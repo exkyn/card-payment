@@ -20,7 +20,7 @@
                     </p>
                     <div class="make-payment-btn">
                         {% if request.user.is_authenticated %}
-                        <button class="modal2_trigger" href="#modal2">Make Payment &nbsp; <i class="fas fa-credit-card"></i></button>
+                        <a class="modal2_trigger btn fw-bold" href="{% url 'manage_card' %}" style="box-shadow:0 0 2px 2px #fff;">Cards & Payments &nbsp; <i class="fas fa-credit-card"></i></a>
                         {% else %}
                         <button class="modal_trigger" href="#modal">Get Started &nbsp; <i class="fas fa-sign-in-alt"></i></button>
                         {% endif %}
