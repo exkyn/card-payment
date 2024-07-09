@@ -469,7 +469,7 @@
     })
 
      // =============RESEND EMAIL AJAX===============
-     $(document).on('submit', '#resendEmail', function (e) {
+    $(document).on('submit', '#resendEmail', function (e) {
         e.preventDefault()
         // var full_name = document.getElementById('sender_full_name').value
         // var email = document.getElementById('sender_email').value

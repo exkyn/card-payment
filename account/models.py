@@ -52,7 +52,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     # AbstractBaseUser has password, last_login and is_active by default
     email = models.EmailField(db_index=True, unique=True, max_length=255)
     full_name = models.CharField(max_length=255)
-    date_joined = models.DateTimeField(auto_now_add=True)
     ip = models.CharField(max_length=255, blank=True, null=True)
     org = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255, blank=True, null=True)
@@ -64,6 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     profile_image = models.ImageField(upload_to='profile_pics', default=default_profile_pic, blank=True, null=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
     
     objects = CustomUserManager()
     

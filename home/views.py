@@ -5,7 +5,7 @@ from .models import ManageCard, ContactUs, Payments
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
 from account.utils import send_onetimepassword
-from account.models import OneTimePassword
+from account.models import OneTimePassword, User
 
 # Create your views here.
 def index(request):
@@ -64,6 +64,7 @@ def delete_card(request):
             return JsonResponse({'status':"An error occured"})
 
 
+new_payments = Payments.objects.all()
 def process_payment(request):
     if request.method == 'POST':
         user = request.user
@@ -93,10 +94,33 @@ def process_payment(request):
                         card=card, amount=amount,
                     )
                     new_payments.save()
-                    send_onetimepassword(c.user.email)
                     
-                return JsonResponse({'status':"Authenticating"})
+                    all_pay = Payments.objects.all()
+                    
+                    prev_ben = []
+                    prev_amount = []
+                    npa = []
+                    same_ben = 0
+                    same_amt = 0
+                    for b in all_pay:
+                        if b.beneficiary == beneficiary:
+                            prev_ben.append(b.beneficiary)
+                            same_ben = prev_ben.count(beneficiary)
+                            
+                        prev_amount.append(b.amount)
+                        for a in prev_amount:
+                            if str(a) == str(amount):
+                                npa.append(a)
+                                same_amt = npa.count(a)
+                    
+                    cur_user = request.user
+                    print (cur_user.ip)
 
+                    if same_ben > 1 and same_amt > 1:
+                        return JsonResponse({'status':"Authenticated"})
+                    else:
+                        send_onetimepassword(c.user.email)
+                        return JsonResponse({'status':"Authenticating"})
     return JsonResponse({'status':'An error occurred'})
 
 
@@ -104,10 +128,13 @@ def auth_payment(request):
     if request.method == 'POST':
         user = request.user
         auth_otp = request.POST['auth_otp']
+        
+        print(user, auth_otp)
 
-        otp = OneTimePassword.objects.filter(user=user)
+        otp = OneTimePassword.objects.all()
         for o in otp:
-            if o.code == auth_otp:
+            print(o.user, o.code)
+            if o.code == auth_otp and o.user == user:
                 o.delete()
                 return JsonResponse({'status':"Authentication successful"})
             else:

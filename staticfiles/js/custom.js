@@ -527,7 +527,11 @@
                 'trans_pin': trans_pin, 'card_code': card_code, csrfmiddlewaretoken: token
             },
             success: function (response) {
-                if (response.status == 'Insufficient funds') {
+                console.log(response.status);
+                if (response.status == 'Authenticated') {
+                    window.location.reload();
+                    alertify.message('Payment successful')
+                } else if (response.status == 'Insufficient funds') {
                     alertify.message(response.status)
                     document.getElementById('amterr').innerHTML = 'Insufficient funds'
                     $('.loadingBtn3').hide()
